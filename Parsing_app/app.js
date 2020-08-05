@@ -96,17 +96,20 @@ async function checkFunSystem(pageNum) {
   });
 }
 
+let isListChanged = false;
 function checkProgramsState(newProgramList) {
   //console.log("checkProgramsState()");
   if (!newProgramList) return;
   if (newProgramList.length == 0) return;
+
+  isListChanged = false;
 
   getOldFunPrograms().then(function(oldProgramList) {
     const isNewProgramAdded = insertNewPrograms(oldProgramList, newProgramList);
     const isClosedProgramDeleted = deleteClosedPrograms(oldProgramList, newProgramList);
     setTimeout(function() {
       let needToChangeNewToOldFlag = false;
-      if (isNewProgramAdded || isClosedProgramDeleted) { // 프로그램 삭제 or 추가된 경우
+      if (isListChanged) { // 프로그램 삭제 or 추가된 경우
         for (oldProgram of oldProgramList) {
           needToChangeNewToOldFlag = false;
           if (oldProgram.isNewProgram){
@@ -126,7 +129,7 @@ function checkProgramsState(newProgramList) {
         }
         changeVersion();
       }
-    }, 2000);
+    }, 5000);
   });
   // if (!oldProgramList) return;
 }
@@ -145,7 +148,6 @@ async function getOldFunPrograms() {
 
 function insertNewPrograms(oldProgramList, newProgramList) {
   //console.log("insertNewProgramList()");
-  let isListChanged = false;
 
   if (!oldProgramList) {
     console.log(oldProgramList)
@@ -190,8 +192,6 @@ function insertNewPrograms(oldProgramList, newProgramList) {
     }
   }
 
-  return isListChanged;
-
   // for (programToInsert of newProgramList) {
   //   console.log(programToInsert);
   //   FunProgram.findOne({
@@ -230,8 +230,6 @@ function insertNewPrograms(oldProgramList, newProgramList) {
 
 function deleteClosedPrograms(oldProgramList, newProgramList) {
   //console.log("deleteClosedPrograms()");
-  let isListChanged = false;
-
   if (!oldProgramList) return false;
 
   for (oldProgram of oldProgramList) {
@@ -261,15 +259,12 @@ function deleteClosedPrograms(oldProgramList, newProgramList) {
           console.log("mongoose deleteOne error in checkClosedPrograms()");
         } else {
           console.log("DELETE a closed program :");
-          console.log(oldProgram);
 
-          let isListChanged = true;
+          isListChanged = true;
         }
       });
     }
   }
-
-  return isListChanged;
 }
 
 function changeVersion() {
@@ -303,7 +298,6 @@ function changeVersion() {
             console.log("mongoose save error in changeVersion()");
           } else {
             console.log("UPDATE a version :");
-            console.log(newVersion);
           }
         })
       }
