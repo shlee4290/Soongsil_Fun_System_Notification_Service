@@ -1,5 +1,5 @@
 # Soongsil_Fun_System_Notification_Service
-숭실대 펀시스템(https://fun.ssu.ac.kr)에 새로운 프로그램이 등록되면 알림해주는 서비스이다.
+숭실대 펀시스템( https://fun.ssu.ac.kr )에 새로운 프로그램이 등록되면 알림해주는 서비스이다.
 
 
 API 사용법
