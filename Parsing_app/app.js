@@ -6,19 +6,19 @@ const mongoose = require("mongoose");
 
 // mongodb Atlas ID: Parsing-app
 // pw: BkOEURxNL5ZabmDo
-// mongoose.connect(
-//   "mongodb+srv://Parsing-app:BkOEURxNL5ZabmDo@cluster0.cxpu4.gcp.mongodb.net/funSystemParsingDB?retryWrites=true",
-//   {
-//     // mongodb cloude에 연결
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   }
-// );
+mongoose.connect(
+  "mongodb+srv://Parsing-app:BkOEURxNL5ZabmDo@cluster0.cxpu4.gcp.mongodb.net/funSystemParsingDB?retryWrites=true",
+  {
+    // mongodb cloude에 연결
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 // for debugging
-mongoose.connect("mongodb://localhost/funSystemParsingDB", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// mongoose.connect("mongodb://localhost/funSystemParsingDB", {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
 
 const funProgramSchema = mongoose.Schema({
   title: String,

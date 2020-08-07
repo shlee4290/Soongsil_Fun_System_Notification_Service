@@ -7,18 +7,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // API-server
 // pwXyR7STuq19D3cZ
-// mongoose.connect(
-//   "mongodb+srv://API-server:pwXyR7STuq19D3cZ@cluster0.cxpu4.gcp.mongodb.net/funSystemParsingDB?retryWrites=true",
-//   {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   }
-// );
+mongoose.connect(
+  "mongodb+srv://API-server:pwXyR7STuq19D3cZ@cluster0.cxpu4.gcp.mongodb.net/funSystemParsingDB?retryWrites=true",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 // for debugging
-mongoose.connect("mongodb://localhost/funSystemParsingDB", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// mongoose.connect("mongodb://localhost/funSystemParsingDB", {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
 
 const funProgramSchema = mongoose.Schema({
   title: String,
