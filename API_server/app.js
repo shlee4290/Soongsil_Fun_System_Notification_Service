@@ -7,13 +7,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // API-server
 // pwXyR7STuq19D3cZ
-mongoose.connect(
-  "mongodb+srv://API-server:pwXyR7STuq19D3cZ@cluster0.cxpu4.gcp.mongodb.net/funSystemParsingDB?retryWrites=true",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+// mongoose.connect(
+//   "mongodb+srv://API-server:pwXyR7STuq19D3cZ@cluster0.cxpu4.gcp.mongodb.net/funSystemParsingDB?retryWrites=true",
+//   {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   }
+// );
+// for debugging
+mongoose.connect("mongodb://localhost/funSystemParsingDB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const funProgramSchema = mongoose.Schema({
   title: String,
@@ -22,8 +27,9 @@ const funProgramSchema = mongoose.Schema({
   remainDate: String,
   url: String,
   id: Number,
-  isNewProgram: Boolean,
-  remainLabel: String,
+  //isNewProgram: Boolean,
+  version: Number,
+  remainLabel: String
 });
 
 const FunProgram = mongoose.model("FunProgram", funProgramSchema);
@@ -55,7 +61,7 @@ app.get("/programs", function (req, res) {
           "remainDate": 1,
           "url": 1,
           "id": 1,
-          "isNewProgram": 1,
+          "version": 1,
           "remainLabel": 1, 
           "length": { "$strLenCP": "$remainDate" } 
         } 
