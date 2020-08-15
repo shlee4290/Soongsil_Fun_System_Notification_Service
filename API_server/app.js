@@ -20,7 +20,7 @@ mongoose.connect(
 //   useUnifiedTopology: true,
 // });
 
-const funProgramSchema = mongoose.Schema({
+const funProgramSchema = new mongoose.Schema({
   title: String,
   department: String,
   date: String,
@@ -29,16 +29,17 @@ const funProgramSchema = mongoose.Schema({
   id: Number,
   //isNewProgram: Boolean,
   version: Number,
-  remainLabel: String
+  remainLabel: String,
+  isClosed: Boolean
 });
 
-const FunProgram = mongoose.model("FunProgram", funProgramSchema);
+const FunProgram = new mongoose.model("FunProgram", funProgramSchema);
 
-const versionSchema = mongoose.Schema({
+const versionSchema = new mongoose.Schema({
   version: Number,
 });
 
-const Version = mongoose.model("Version", versionSchema);
+const Version = new mongoose.model("Version", versionSchema);
 
 app.get("/version", function (req, res) {
   Version.findOne(function (err, foundVersion) {
@@ -53,7 +54,10 @@ app.get("/version", function (req, res) {
 app.get("/programs", function (req, res) {
   FunProgram.aggregate(
     [
-      { $project: 
+      {$match:
+        {"isClosed": false}
+      },
+      {$project: 
         {
           "title": 1,
           "department": 1,
@@ -63,7 +67,8 @@ app.get("/programs", function (req, res) {
           "id": 1,
           "version": 1,
           "remainLabel": 1, 
-          "length": { "$strLenCP": "$remainDate" } 
+          "length": { "$strLenCP": "$remainDate" },
+          "isClosed": 1
         } 
       },
       {$sort: 
