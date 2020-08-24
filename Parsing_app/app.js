@@ -363,7 +363,7 @@ function deleteClosedPrograms(oldProgramList, newProgramList) {
         if (!err) {
           if (foundProgram) {
             FunProgram.updateOne(
-              { id: oldProgram.id },
+              { id: foundProgram.id },
               { $set: { isClosed: true } },
               function (err) {
                 if (err) {
