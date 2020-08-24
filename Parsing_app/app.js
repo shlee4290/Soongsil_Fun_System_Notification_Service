@@ -221,9 +221,9 @@ async function insertNewPrograms(oldProgramList, newProgramList) {
       if (!err) {
         if (foundProgram) {
           // 기존에도 있던 프로그램인 경우
-          if (foundProgram.isClosed == false){ // 신청 종료라고 되어있는 프로그램인 경우
+          if (foundProgram.isClosed == true){ // 신청 종료라고 되어있는 프로그램인 경우
             FunProgram.updateOne(
-              { id: newProgramList.id },
+              { id: foundProgram.id },
               { $set: { isClosed: false } },
               function (err) {
                 if (err) {
@@ -233,7 +233,8 @@ async function insertNewPrograms(oldProgramList, newProgramList) {
                   );
                 }
               }
-            ); ///////////////////////
+            );
+            console.log("isClosed true -> false");
           }
         } else {
           // 기존에 없던 새로운 프로그램인 경우
