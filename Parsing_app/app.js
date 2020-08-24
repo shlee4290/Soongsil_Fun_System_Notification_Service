@@ -30,7 +30,7 @@ const funProgramSchema = new mongoose.Schema({
   //isNewProgram: Boolean,
   version: Number,
   remainLabel: String,
-  isClosed: Boolean
+  isClosed: Boolean,
 });
 
 const FunProgram = new mongoose.model("FunProgram", funProgramSchema);
@@ -194,7 +194,10 @@ function checkProgramsState(newProgramList) {
 async function getOldFunPrograms() {
   // DB에 저장되어 있던 프로그램 리스트 가져오는 함수
   //console.log("getOldFunPrograms()");
-  return await FunProgram.find({isClosed: false}, async function (err, foundFunPrograms) {
+  return await FunProgram.find({ isClosed: false }, async function (
+    err,
+    foundFunPrograms
+  ) {
     if (!err) {
       return await foundFunPrograms;
     } else {
@@ -214,12 +217,28 @@ async function insertNewPrograms(oldProgramList, newProgramList) {
   }
 
   newProgramList.forEach((newProgram) => {
-    FunProgram.findOne({id: newProgram.id}, function(err, foundProgram){
+    FunProgram.findOne({ id: newProgram.id }, function (err, foundProgram) {
       if (!err) {
-        if (foundProgram) { // 기존에도 있던 프로그램인 경우
-          ;
-        } else { // 기존에 없던 새로운 프로그램인 경우
-          if (currentVersion != 0) { // 버전이 제대로 불러와 진 경우에만 수행
+        if (foundProgram) {
+          // 기존에도 있던 프로그램인 경우
+          if (foundProgram.isClosed == false){ // 신청 종료라고 되어있는 프로그램인 경우
+            FunProgram.updateOne(
+              { id: newProgramList.id },
+              { $set: { isClosed: false } },
+              function (err) {
+                if (err) {
+                  console.log(err);
+                  console.log(
+                    "mongoose updateOne error in insertNewPrograms()"
+                  );
+                }
+              }
+            ); ///////////////////////
+          }
+        } else {
+          // 기존에 없던 새로운 프로그램인 경우
+          if (currentVersion != 0) {
+            // 버전이 제대로 불러와 진 경우에만 수행
             newProgram.version = currentVersion + 1;
             const funProgram = new FunProgram(newProgram);
             funProgram.save(function (err) {
@@ -241,8 +260,6 @@ async function insertNewPrograms(oldProgramList, newProgramList) {
       }
     });
   });
-
-
 
   // for (newProgram of newProgramList) {
   //   FunProgram.findOne({id: newProgram.id}, function(err, foundProgram){
@@ -272,33 +289,33 @@ async function insertNewPrograms(oldProgramList, newProgramList) {
   //     }
   //   });
 
-    // let notFoundFlag = true;
-    // for (oldProgram of oldProgramList) {
-    //   if (oldProgram.id == newProgram.id) {
-    //     // 해당 프로그램이 이전에도 존재하던 프로그램이라면 (새로 등록된 프로그램이 아니라면)
-    //     notFoundFlag = false;
-    //     break; // 탐색 종료하고 다음 프로그램 검사하기 위해 break
-    //   }
-    // }
-    // if (notFoundFlag) {
-    //   // 새로 등록된 프로그램인 경우
-    //   //newProgram.isNewProgram = true;
-    //   if (currentVersion != 0) { // 버전이 제대로 불러와 진 경우에만 수행
-    //     newProgram.version = currentVersion + 1;
-    //     const funProgram = new FunProgram(newProgram);
-    //     funProgram.save(function (err) {
-    //       // DB에 추가
-    //       if (err) {
-    //         console.log(err);
-    //         console.log("mongoose save error in insertNewProgramList()");
-    //       } else {
-    //         isListChanged = true;
-    //       }
-    //     });
-    //     console.log("INSERT a new program");
-    //     console.log(newProgram);
-    //   }
-    // }
+  // let notFoundFlag = true;
+  // for (oldProgram of oldProgramList) {
+  //   if (oldProgram.id == newProgram.id) {
+  //     // 해당 프로그램이 이전에도 존재하던 프로그램이라면 (새로 등록된 프로그램이 아니라면)
+  //     notFoundFlag = false;
+  //     break; // 탐색 종료하고 다음 프로그램 검사하기 위해 break
+  //   }
+  // }
+  // if (notFoundFlag) {
+  //   // 새로 등록된 프로그램인 경우
+  //   //newProgram.isNewProgram = true;
+  //   if (currentVersion != 0) { // 버전이 제대로 불러와 진 경우에만 수행
+  //     newProgram.version = currentVersion + 1;
+  //     const funProgram = new FunProgram(newProgram);
+  //     funProgram.save(function (err) {
+  //       // DB에 추가
+  //       if (err) {
+  //         console.log(err);
+  //         console.log("mongoose save error in insertNewProgramList()");
+  //       } else {
+  //         isListChanged = true;
+  //       }
+  //     });
+  //     console.log("INSERT a new program");
+  //     console.log(newProgram);
+  //   }
+  // }
   //}
 }
 
@@ -341,19 +358,24 @@ function deleteClosedPrograms(oldProgramList, newProgramList) {
     }
     if (notFoundFlag) {
       // 마감된(삭제된) 프로그램이라면
-      FunProgram.findOne({id: oldProgram.id}, function(err, foundProgram){
+      FunProgram.findOne({ id: oldProgram.id }, function (err, foundProgram) {
         if (!err) {
           if (foundProgram) {
-            FunProgram.updateOne({id: oldProgram.id}, {$set: {isClosed: true}}, function(err){
-              if (err) {
-                console.log(err);
-                console.log("mongoose updateOne error in deleteClosedPrograms()");
-              } else {
-                isListChanged = true;
+            FunProgram.updateOne(
+              { id: oldProgram.id },
+              { $set: { isClosed: true } },
+              function (err) {
+                if (err) {
+                  console.log(err);
+                  console.log(
+                    "mongoose updateOne error in deleteClosedPrograms()"
+                  );
+                } else {
+                  isListChanged = true;
+                }
               }
-            });
+            );
           } else {
-            ;
           }
         } else {
           console.log(err);
@@ -390,16 +412,16 @@ function getVersion() {
         // 기존에 저장된 버전이 없는경우
         currentVersion = 1;
         let version = new Version({
-          version: currentVersion
-        })
-        version.save(function(err){
+          version: currentVersion,
+        });
+        version.save(function (err) {
           if (err) {
             console.log(err);
-            console.log("mongoose save error in getVersion()")
+            console.log("mongoose save error in getVersion()");
           } else {
             console.log("FIRST version : " + currentVersion);
           }
-        })
+        });
       }
     } else {
       console.log(err);

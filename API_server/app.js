@@ -64,11 +64,11 @@ app.get("/programs", function (req, res) {
           "date": 1,
           "remainDate": 1,
           "url": 1,
-          "id": 1,
+          //"id": 1,
           "version": 1,
           "remainLabel": 1, 
           "length": { "$strLenCP": "$remainDate" },
-          "isClosed": 1
+          //"isClosed": 1
         } 
       },
       {$sort: 
