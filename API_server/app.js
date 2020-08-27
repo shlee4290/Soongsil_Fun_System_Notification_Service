@@ -73,7 +73,6 @@ app.get("/programs", function (req, res) {
       },
       {$sort: 
         {
-          "remainLabel": 1,
           "length": 1,
           "remainDate": 1
         }

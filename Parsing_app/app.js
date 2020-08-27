@@ -162,29 +162,6 @@ function checkProgramsState(newProgramList) {
     setTimeout(function () {
       // 위의 두 함수에서 프로그램 삭제/추가가 비동기적으로 이루어지므로 그 과정이 끝나기를 기다린 후 진행한다
       if (isListChanged) {
-        // 프로그램 삭제 or 추가된 경우에
-        // for (oldProgram of oldProgramList) {
-        //   // 기존 리스트에 있던 프로그램들은 더이상 새로운 프로그램이 아니므로 isNewProgram을 false로 재설정한다
-        //   if (oldProgram.isNewProgram) {
-        //     for (program of newProgramList) {
-        //       if (oldProgram.id == program.id) { // 기존의 리스트에 있던 프로그램이라면
-        //         FunProgram.updateOne({
-        //           id: program.id
-        //         }, {
-        //           $set: {
-        //             isNewProgram: false
-        //           }
-        //         }, function(err) {
-        //           if (err) {
-        //             console.log(err);
-        //             console.log("mongoose updateOne error in checkProgramsState()");
-        //           }
-        //         })
-        //         break;
-        //       }
-        //     }
-        //   }
-        // }
         changeVersion(currentVersion);
       }
     }, 5000);
@@ -261,63 +238,6 @@ async function insertNewPrograms(oldProgramList, newProgramList) {
       }
     });
   });
-
-  // for (newProgram of newProgramList) {
-  //   FunProgram.findOne({id: newProgram.id}, function(err, foundProgram){
-  //     if (!err) {
-  //       if (foundProgram) { // 기존에도 있던 프로그램인 경우
-  //         ;
-  //       } else { // 기존에 없던 새로운 프로그램인 경우
-  //         if (currentVersion != 0) { // 버전이 제대로 불러와 진 경우에만 수행
-  //           newProgram.version = currentVersion + 1;
-  //           const funProgram = new FunProgram(newProgram);
-  //           funProgram.save(function (err) {
-  //             // DB에 추가
-  //             if (err) {
-  //               console.log(err);
-  //               console.log("mongoose save error in insertNewProgramList()");
-  //             } else {
-  //               isListChanged = true;
-  //             }
-  //           });
-  //           console.log("INSERT a new program");
-  //           console.log(newProgram);
-  //         }
-  //       }
-  //     } else {
-  //       console.log(err);
-  //       console.log("mongoose findOne error in insertNewPrograms()");
-  //     }
-  //   });
-
-  // let notFoundFlag = true;
-  // for (oldProgram of oldProgramList) {
-  //   if (oldProgram.id == newProgram.id) {
-  //     // 해당 프로그램이 이전에도 존재하던 프로그램이라면 (새로 등록된 프로그램이 아니라면)
-  //     notFoundFlag = false;
-  //     break; // 탐색 종료하고 다음 프로그램 검사하기 위해 break
-  //   }
-  // }
-  // if (notFoundFlag) {
-  //   // 새로 등록된 프로그램인 경우
-  //   //newProgram.isNewProgram = true;
-  //   if (currentVersion != 0) { // 버전이 제대로 불러와 진 경우에만 수행
-  //     newProgram.version = currentVersion + 1;
-  //     const funProgram = new FunProgram(newProgram);
-  //     funProgram.save(function (err) {
-  //       // DB에 추가
-  //       if (err) {
-  //         console.log(err);
-  //         console.log("mongoose save error in insertNewProgramList()");
-  //       } else {
-  //         isListChanged = true;
-  //       }
-  //     });
-  //     console.log("INSERT a new program");
-  //     console.log(newProgram);
-  //   }
-  // }
-  //}
 }
 
 function deleteClosedPrograms(oldProgramList, newProgramList) {
@@ -383,21 +303,6 @@ function deleteClosedPrograms(oldProgramList, newProgramList) {
           console.log("mongoose findOne error in deleteClosedPrograms()");
         }
       });
-
-      // FunProgram.deleteOne(
-      //   {
-      //     // DB에서 삭제
-      //     id: oldProgram.id,
-      //   },
-      //   function (err) {
-      //     if (err) {
-      //       console.log(err);
-      //       console.log("mongoose deleteOne error in checkClosedPrograms()");
-      //     } else {
-      //       isListChanged = true;
-      //     }
-      //   }
-      // );
       console.log("DELETE a closed program :");
       console.log(oldProgram);
     }
