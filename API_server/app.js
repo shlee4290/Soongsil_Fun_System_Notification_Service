@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -5,10 +6,8 @@ const mongoose = require("mongoose");
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// API-server
-// pwXyR7STuq19D3cZ
 mongoose.connect(
-  "mongodb+srv://API-server:pwXyR7STuq19D3cZ@cluster0.cxpu4.gcp.mongodb.net/funSystemParsingDB?retryWrites=true",
+  process.env.DB_HOST,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,

@@ -1,13 +1,12 @@
+require('dotenv').config();
 const axios = require("axios");
 const cheerio = require("cheerio");
 const mongoose = require("mongoose");
 
 // mongoose 설정 ////////////////////////////////////////////////////////////////
 
-// mongodb Atlas ID: Parsing-app
-// pw: BkOEURxNL5ZabmDo
 mongoose.connect(
-  "mongodb+srv://Parsing-app:BkOEURxNL5ZabmDo@cluster0.cxpu4.gcp.mongodb.net/funSystemParsingDB?retryWrites=true",
+  process.env.DB_HOST,
   {
     // mongodb cloude에 연결
     useNewUrlParser: true,
